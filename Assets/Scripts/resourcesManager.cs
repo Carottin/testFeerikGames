@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using System.Threading;
 
-public class resourcesHandler : MonoBehaviour {
+public class resourcesManager : MonoBehaviour {
 
 	// Images on internet
 	string url1 = "https://www.w3schools.com/howto/img_fjords.jpg";
@@ -14,7 +14,7 @@ public class resourcesHandler : MonoBehaviour {
 	[SerializeField]
 	private int maxThread = 3; // maximum number of threads
 
-	public int nbThreadActive = 0; // number of active threads
+	int nbThreadActive = 0; // number of active threads
 
 	List<string> urlArray;
 

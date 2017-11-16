@@ -1,0 +1,6 @@
+Version unity : 2017.1.1f1
+
+Commentaires :
+	Script resourcesManager : Permet de charger les textures
+
+	Script applyTextures : Applique les textures sur un modèle selon l'indice passé en paramètre

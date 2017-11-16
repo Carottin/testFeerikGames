@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class applyTexture : MonoBehaviour {
 
+	[SerializeField]
+	private int indexTexture = 0; // index of the texture to apply
+
 	// Use this for initialization
 	IEnumerator Start () {
-		yield return new WaitUntil (() => resourcesHandler.texturesLoaded == true);
+		yield return new WaitUntil (() => resourcesManager.texturesLoaded == true);
 		Renderer renderer = GetComponent<Renderer>();
-		renderer.material.mainTexture = ressourcesHandler.textureArray[1];
+		if(resourcesManager.textureArray.Count >=0 && indexTexture>=0 && indexTexture<resourcesManager.textureArray.Count )
+			renderer.material.mainTexture = resourcesManager.textureArray[indexTexture];
 	}
 	
 	// Update is called once per frame
