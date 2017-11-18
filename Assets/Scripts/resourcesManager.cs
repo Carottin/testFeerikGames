@@ -35,7 +35,7 @@ public class resourcesManager : MonoBehaviour {
 			WWW www = new WWW(urlArray[i]);
 			yield return www;
 
-			// Check if the number of active threads is inferior to the maximum number of threads
+			// Check if the number of active threads is inferior to the maximum number of coroutines
 			yield return new WaitUntil (() => nbThreadActive != maxThread);
 
 			filePath = Application.persistentDataPath + "/Textures/" + Path.GetFileName (urlArray [i]);
@@ -48,11 +48,11 @@ public class resourcesManager : MonoBehaviour {
 			if (!File.Exists (filePath)) {
 				File.WriteAllBytes (filePath, www.bytes); // Creation of a new image file
 				StartCoroutine ("LoadTexture", parms); // start thread to load texture
-				nbThreadActive++; // increment the number of active thread
+				nbThreadActive++; // increment the number of active coroutines
 			} else { // File is on the disk
 				Debug.Log ("File exist");
 				StartCoroutine ("LoadTexture", parms);// start thread to load texture
-				nbThreadActive++; // increment the number of active thread
+				nbThreadActive++; // increment the number of active coroutines
 			}
 
 		}
@@ -70,9 +70,6 @@ public class resourcesManager : MonoBehaviour {
 	}
 
 	IEnumerator LoadTexture (object[] parms){
-		// parms[0] : path of the image
-		// parms[0] : the texture to load
-
 		byte[] imageData = File.ReadAllBytes((string)parms[0]); // read the image
 		((Texture2D)parms[1]).LoadImage(imageData); // load image into the texture
 
