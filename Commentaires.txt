@@ -4,3 +4,5 @@ Commentaires :
 	Script resourcesManager : Permet de charger les textures
 
 	Script applyTextures : Applique les textures sur un modèle selon l'indice passé en paramètre
+
+	Unity n'étant pas thread-safe, j'ai utilisé des coroutines pour ne pas bloquer les autres executions.
