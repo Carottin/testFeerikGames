@@ -76,7 +76,6 @@ public class resourcesManager : MonoBehaviour {
 
 	}
 	void writeOnDisk(string filePath, byte[]data){
-		Debug.Log ("zer");
 		File.WriteAllBytes (filePath, data); // write the images on the disk
 		readOnDisk (filePath); // start the thread to read the images from the disk
 	}
