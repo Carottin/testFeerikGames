@@ -24,9 +24,9 @@ public class resourcesManager : MonoBehaviour {
 	List<byte[]> imagesData;
 
 	public static List<Texture2D> textureArray; 
-	public Texture2D texture;
+	Texture2D texture;
 	public static bool texturesLoaded = false; // check if all textures are loaded
-	public string filePath;	
+	string filePath;	
 	
 	IEnumerator Start()
 	{
