@@ -13,10 +13,15 @@ public class resourcesManager : MonoBehaviour {
 
 	[SerializeField]
 	private int maxThread = 3; // maximum number of threads
-
 	int nbThreadActive = 0; // number of active threads
 
+	[SerializeField]
+	private int maxCoroutine = 3; // maximum number of coroutine
+	int nbCoroutineActive = 0; // number of active coroutine
+
 	List<string> urlArray;
+
+	List<byte[]> imagesData;
 
 	public static List<Texture2D> textureArray; 
 	public Texture2D texture;
@@ -26,6 +31,7 @@ public class resourcesManager : MonoBehaviour {
 	IEnumerator Start()
 	{
 		urlArray = new List<string>();
+		imagesData = new List<byte[]>();
 		textureArray = new List<Texture2D> ();
 		urlArray.Add (url1);
 		urlArray.Add (url2);
@@ -35,26 +41,31 @@ public class resourcesManager : MonoBehaviour {
 			WWW www = new WWW(urlArray[i]);
 			yield return www;
 
-			// Check if the number of active threads is inferior to the maximum number of coroutines
+			// Check if the number of active threads is inferior to the maximum number of threads
 			yield return new WaitUntil (() => nbThreadActive != maxThread);
 
 			filePath = Application.persistentDataPath + "/Textures/" + Path.GetFileName (urlArray [i]);
 
-			texture = new Texture2D(4, 4); // Create a new texture
-
-			object[] parms = new object[2]{filePath, texture};
+			byte[] data = www.bytes;
 
 			// If file is not on the disk
 			if (!File.Exists (filePath)) {
-				File.WriteAllBytes (filePath, www.bytes); // Creation of a new image file
-				StartCoroutine ("LoadTexture", parms); // start thread to load texture
-				nbThreadActive++; // increment the number of active coroutines
+				Thread thread = new Thread(() => writeOnDisk(filePath, data)); 
+				thread.Start(); // start thethread to write from on disk from server
+				nbThreadActive++; // increment the number of active threads
 			} else { // File is on the disk
-				Debug.Log ("File exist");
-				StartCoroutine ("LoadTexture", parms);// start thread to load texture
-				nbThreadActive++; // increment the number of active coroutines
+				Thread thread = new Thread(() => readOnDisk(filePath));
+				thread.Start(); // start the thread to read the images from the disk
+				nbThreadActive++; // increment the number of active threads
 			}
+		}
 
+		for (int i = 0; i < imagesData.Count; i++) {
+			yield return new WaitUntil (() => nbCoroutineActive != maxCoroutine);
+			texture = new Texture2D(4, 4); // Create a new texture
+			object[] parms = new object[2]{i, texture};
+			StartCoroutine ("LoadTexture", parms);
+			nbCoroutineActive++;
 		}
 		// All texture are loaded
 		texturesLoaded = true;
@@ -64,17 +75,27 @@ public class resourcesManager : MonoBehaviour {
 	void Update () {
 
 	}
+	void writeOnDisk(string filePath, byte[]data){
+		Debug.Log ("zer");
+		File.WriteAllBytes (filePath, data);
+		readOnDisk (filePath); // start the thread to read the images from the disk
+	}
+
+	void readOnDisk(string filePath){
+		imagesData.Add (File.ReadAllBytes (filePath));
+		nbThreadActive--;
+	}
+
 	void applyTexture(){
 		Renderer renderer = GetComponent<Renderer>();
 		renderer.material.mainTexture = textureArray[0];
 	}
 
 	IEnumerator LoadTexture (object[] parms){
-		byte[] imageData = File.ReadAllBytes((string)parms[0]); // read the image
-		((Texture2D)parms[1]).LoadImage(imageData); // load image into the texture
+		((Texture2D)parms[1]).LoadImage(imagesData[(int)parms[0]]); // load image into the texture
 
 		textureArray.Add ((Texture2D)parms[1]); // add the image to the textures array
-		nbThreadActive--; // decrement the number of thread
+		nbCoroutineActive--; // decrement the number of coroutine
 
 		yield break;
 	}		
