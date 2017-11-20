@@ -19,9 +19,9 @@ public class resourcesManager : MonoBehaviour {
 	private int maxCoroutine = 3; // maximum number of coroutine
 	int nbCoroutineActive = 0; // number of active coroutine
 
-	List<string> urlArray;
+	List<string> urlArray; // images' url list
 
-	List<byte[]> imagesData;
+	List<byte[]> imagesData;// images list
 
 	public static List<Texture2D> textureArray; 
 	Texture2D texture;
@@ -30,8 +30,8 @@ public class resourcesManager : MonoBehaviour {
 	
 	IEnumerator Start()
 	{
-		urlArray = new List<string>(); // images' url list
-		imagesData = new List<byte[]>(); // images list
+		urlArray = new List<string>(); // create a new images' url list
+		imagesData = new List<byte[]>(); // create a new images list
 		textureArray = new List<Texture2D> (); // texture list
 		urlArray.Add (url1);
 		urlArray.Add (url2);
